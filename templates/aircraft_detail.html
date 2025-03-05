@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aircraft Details</title>
+</head>
+<body>
+    <h1>Aircraft Details</h1>
+    {% if aircraft %}
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Aircraft Name</th>
+                <th>Fault Status</th>
+                <th>NO_OF_PASSENGERS</th>
+                <th>AC_TYPE</th>
+                <th>SENSOR_DATA</th>
+            </tr>
+            <tr>
+                <td>{{ aircraft.AC_id }}</td>
+                <td>{{ aircraft.AC_NAME }}</td>
+                <td>{{ aircraft.FAULT_STATUS }}</td>
+                <td>{{ aircraft.NO_OF_PASSENGERS }}</td>
+                <td>{{ aircraft.AC_TYPE }}</td>
+                <td>{{ aircraft.SENSOR_DATA }}</td>
+            </tr>
+        </table>
+    {% else %}
+        <p>No aircraft data found.</p>
+    {% endif %}
+    <a href="{{ url_for('aircraft_detail', aircraft_id=aircraft.AC_id) }}">{{ aircraft.AC_NAME }}</a>
+</body>
+</html>

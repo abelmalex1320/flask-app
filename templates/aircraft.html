@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aircraft {{ aircraft_id }} Data</title>
+    <script>
+        function fetchData() {
+            fetch('/data/{{ aircraft_id }}')
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.getElementById("sensorTableBody");
+                let faultDiv = document.getElementById("faultAlerts");
+                tableBody.innerHTML = "";
+                faultDiv.innerHTML = "";
+
+                let hasFault = false;
+
+                data.forEach(row => {
+                    let tr = document.createElement("tr");
+                    tr.innerHTML = `<td>${row.sensor_name}</td>
+                                    <td>${row.value}</td>
+                                    <td>${row.timestamp}</td>`;
+                    tableBody.appendChild(tr);
+
+                    // Fault Alerts
+                    if ((row.sensor_name === "Hydraulic Pressure" && row.value < 2000) ||
+                        (row.sensor_name === "Engine Temperature" && row.value > 700) ||
+                        (row.sensor_name === "Voltage" && (row.value < 24 || row.value > 30))) {
+                        let faultMessage = document.createElement("p");
+                        faultMessage.textContent = `⚠ FAULT: ${row.sensor_name} - ${row.value}`;
+                        faultDiv.appendChild(faultMessage);
+                        hasFault = true;
+                    }
+                });
+
+                // Flashing Red Alert if Fault Exists
+                if (hasFault) {
+                    faultDiv.style.backgroundColor = "red";
+                    faultDiv.style.color = "white";
+                    faultDiv.style.padding = "10px";
+                    faultDiv.style.fontWeight = "bold";
+                    faultDiv.innerHTML = "<h3>⚠ SYSTEM FAULT DETECTED!</h3>" + faultDiv.innerHTML;
+                }
+            });
+        }
+
+        setInterval(fetchData, 5000);
+        window.onload = fetchData;
+    </script>
+</head>
+<body>
+    <h2>Sensor Data for Aircraft ID: {{ aircraft_id }}</h2>
+    <a href="/">Back to Aircraft List</a>
+
+    <!-- Fault Alerts -->
+    <div id="faultAlerts"></div>
+
+    <!-- Sensor Data Table -->
+    <table border="1">
+        <tr>
+            <th>Sensor</th>
+            <th>Value</th>
+            <th>Timestamp</th>
+        </tr>
+        <tbody id="sensorTableBody"></tbody>
+    </table>
+
+    <!-- Reset System Button -->
+    <button onclick="resetSystem()">RESET SYSTEM</button>
+
+    <script>
+        function resetSystem() {
+            fetch('/reset/{{ aircraft_id }}', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                fetchData();
+            });
+        }
+    </script>
+</body>
+</html>

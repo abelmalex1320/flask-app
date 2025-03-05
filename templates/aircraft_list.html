@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aircraft List</title>
+</head>
+<body>
+    <h1>Aircraft List</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Aircraft Name</th>
+            <th>Fault Status</th>
+        </tr>
+        {% for aircraft in aircrafts %}
+        <tr>
+            <td>{{ aircraft.AC_ID }}</td>
+            <td><a href="{{ url_for('aircraft_detail', aircraft_id=aircraft.AC_ID) }}">{{ aircraft.AC_NAME }}</a></td>
+            <td>{{ aircraft.FAULT_STATUS }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

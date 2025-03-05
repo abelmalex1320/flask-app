@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aircraft List</title>
+</head>
+<body>
+    <h2>Aircraft Monitoring System</h2>
+    <table border="1">
+        <tr>
+            <th>Aircraft ID</th>
+            <th>Name</th>
+            <th>Status</th>
+        </tr>
+        {% for aircraft in aircraft_list %}
+        <tr>
+            <td><a href="/aircraft/{{ aircraft.id }}">{{ aircraft.id }}</a></td>
+            <td>{{ aircraft.name }}</td>
+            <td>
+                {% if aircraft.has_fault %}
+                    <span style="color:red;">⚠️ Fault Detected</span>
+                {% else %}
+                    ✅ Normal
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
